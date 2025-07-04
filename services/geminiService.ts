@@ -2,11 +2,13 @@
 import { GoogleGenAI, GenerateContentResponse } from "@google/genai";
 import { MindMapNode, SpeakerAnalysisResult } from '../types';
 
-if (!process.env.API_KEY) {
-  throw new Error("La variabile d'ambiente API_KEY non è impostata.");
+// Cerca la variabile VITE_API_KEY
+if (!process.env.VITE_API_KEY) { 
+  throw new Error("La variabile d'ambiente VITE_API_KEY non è impostata.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+// Usa la variabile VITE_API_KEY per inizializzare GoogleGenAI
+const ai = new GoogleGenAI({ apiKey: process.env.VITE_API_KEY });
 
 const fileToGenerativePart = async (file: File) => {
   const base64EncodedDataPromise = new Promise<string>((resolve) => {
