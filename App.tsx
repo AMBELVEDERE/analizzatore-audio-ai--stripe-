@@ -5,11 +5,10 @@ import { AnalysisType, MindMapNode, CombinedAnalysisResult, SpeakerAnalysisResul
 import * as geminiService from './services/geminiService';
 import Icon from './components/Icon';
 import MindMap from './components/MindMap';
-import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 import { Auth } from '@supabase/auth-ui-react';
 import { ThemeSupa } from '@supabase/auth-ui-shared';
 import { Session } from '@supabase/supabase-js';
-
+import { supabase } from './services/supabaseClient'; // <-- 1. CORREZIONE: Aggiunto import
 
 const App: React.FC = () => {
   const [session, setSession] = useState<Session | null>(null);
@@ -25,20 +24,19 @@ const App: React.FC = () => {
   const [combinedData, setCombinedData] = useState<CombinedAnalysisResult | null>(null);
   const [speakerAnalysisData, setSpeakerAnalysisData] = useState<SpeakerAnalysisResult | null>(null);
 
+  // 2. CORREZIONE: Semplificato useEffect
   useEffect(() => {
-    if (isSupabaseConfigured) {
-        supabase.auth.getSession().then(({ data: { session } }) => {
-        setSession(session);
-        });
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
 
-        const {
-        data: { subscription },
-        } = supabase.auth.onAuthStateChange((_event, session) => {
-        setSession(session);
-        });
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
 
-        return () => subscription.unsubscribe();
-    }
+    return () => subscription.unsubscribe();
   }, []);
 
 
@@ -281,27 +279,8 @@ const App: React.FC = () => {
     return null;
   }
   
-  if (!isSupabaseConfigured) {
-    return (
-      <div className="min-h-screen bg-gray-900 font-sans p-4 sm:p-8 flex items-center justify-center">
-        <div className="w-full max-w-lg bg-gray-800 p-8 rounded-lg shadow-2xl text-center border border-red-500/50">
-          <h1 className="text-3xl font-bold text-white tracking-tight mb-4">
-            Configurazione Richiesta
-          </h1>
-          <p className="text-gray-300 leading-relaxed">
-            Le credenziali per Supabase non sono state trovate. Per utilizzare questa applicazione, è necessario impostare le seguenti variabili d'ambiente:
-          </p>
-          <div className="my-6 text-left bg-gray-900 p-4 rounded-md font-mono text-sm text-sky-300">
-            <p>SUPABASE_URL=Il_tuo_url_del_progetto</p>
-            <p>SUPABASE_ANON_KEY=La_tua_chiave_anon</p>
-          </div>
-          <p className="text-sm text-gray-500">
-            Una volta impostate, ricarica l'applicazione.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // 3. CORREZIONE: Blocco if rimosso
+  // if (!isSupabaseConfigured) { ... }
 
   if (!session) {
     return (
@@ -315,7 +294,7 @@ const App: React.FC = () => {
             supabaseClient={supabase}
             appearance={{ theme: ThemeSupa }}
             theme="dark"
-            providers={['google', 'github']}
+            providers={[]} // Lasciato vuoto per usare solo email/password
           />
         </div>
       </div>
