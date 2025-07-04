@@ -1,0 +1,6 @@
+{
+  "name": "Analizzatore Audio AI (Stripe)",
+  "description": "Un'applicazione web per caricare file audio (MP3, MP4, WAV) e generare riassunti, separare gli speaker e creare mappe mentali utilizzando l'API Gemini.",
+  "requestFramePermissions": [],
+  "prompt": ""
+}
